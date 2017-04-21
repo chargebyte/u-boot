@@ -1,0 +1,6 @@
+I2SE DUCKBILL BOARD
+M:	Michael Heimpold <mhei@heimpold.de>
+S:	Maintained
+F:	board/i2se/duckbill/
+F:	include/configs/duckbill.h
+F:	configs/duckbill_defconfig
