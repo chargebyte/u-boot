@@ -1,0 +1,6 @@
+TARRAGON BOARD
+M:	Michael Heimpold <michael.heimpold@i2se.com>
+S:	Maintained
+F:	board/i2se/tarragon/
+F:	include/configs/tarragon.h
+F:	configs/tarragon_defconfig
