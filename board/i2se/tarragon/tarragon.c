@@ -166,6 +166,9 @@ int board_ehci_hcd_init(int port)
 #endif
 
 #ifdef CONFIG_FEC_MXC
+
+#define PHY_RST_GPIO	IMX_GPIO_NR(5, 6)
+
 /*
  * pin conflicts for fec1 and fec2, GPIO1_IO06 and GPIO1_IO07 can only
  * be used for ENET1 or ENET2, cannot be used for both.
@@ -208,6 +211,12 @@ static void setup_iomux_fec(int fec_id)
 int board_eth_init(bd_t *bis)
 {
 	setup_iomux_fec(CONFIG_FEC_ENET_DEV);
+
+	gpio_direction_output(PHY_RST_GPIO, 0);
+	udelay(200);
+	gpio_set_value(PHY_RST_GPIO, 1);
+
+	udelay(10000);
 
 	return fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
 				       CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
