@@ -79,16 +79,16 @@
 	"boot_fdt=try\0" \
 	"ip_dyn=yes\0" \
 	"bootsys=1\0" \
-	"mmcdev=0\0" \
+	"mmcdev=1\0" \
 	"mmcpart=1\0" \
-	"mmcroot=/dev/mmcblk0p1\0" \
+	"mmcroot=/dev/mmcblk1p1\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
 		"root=${mmcroot} rootfstype=ext4 rootwait rw bootsys=${bootsys} panic=1\0" \
 	"loadimage=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} /boot/${image}\0" \
 	"loadfdt=ext4load mmc ${mmcdev}:${mmcpart} ${fdt_addr} /boot/${fdt_file}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"setenv mmcpart ${bootsys}; " \
-		"setenv mmcroot /dev/mmcblk0p${mmcpart}; " \
+		"setenv mmcroot /dev/mmcblk1p${mmcpart}; " \
 		"run mmcargs; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
 			"if run loadfdt; then " \
