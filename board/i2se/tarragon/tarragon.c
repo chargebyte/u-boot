@@ -70,6 +70,9 @@ static void setup_iomux_uart(void)
 }
 
 #ifdef CONFIG_FSL_ESDHC
+
+#define TARRAGON_MMC 0
+
 static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_CSI_VSYNC__USDHC2_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_CSI_HSYNC__USDHC2_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
@@ -86,7 +89,18 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_GPIO1_IO09__GPIO1_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-static struct fsl_esdhc_cfg usdhc2_cfg = { USDHC2_BASE_ADDR, 0, 8, 0, 1 };
+static iomux_v3_cfg_t const usdhc2_sd_pads[] = {
+	MX6_PAD_NAND_RE_B__USDHC2_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_NAND_WE_B__USDHC2_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_NAND_DATA00__USDHC2_DATA0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_NAND_DATA01__USDHC2_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_NAND_DATA02__USDHC2_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_NAND_DATA03__USDHC2_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+};
+
+static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 8, 0, 1 };
+
+static struct fsl_esdhc_cfg usdhc2_sd_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 0 };
 
 #define USDHC2_RST_GPIO	IMX_GPIO_NR(1, 9)
 
@@ -116,9 +130,13 @@ int board_mmc_init(bd_t *bis)
 	udelay(500);
 	gpio_direction_output(USDHC2_RST_GPIO, 1);
 
-	usdhc2_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-
-	ret = fsl_esdhc_initialize(bis, &usdhc2_cfg);
+#if TARRAGON_MMC == 0
+	usdhc2_sd_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+	ret = fsl_esdhc_initialize(bis, &usdhc2_sd_cfg);
+#else
+	usdhc2_emmc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+	ret = fsl_esdhc_initialize(bis, &usdhc2_emmc_cfg);
+#endif
 #ifndef CONFIG_SPL_BUILD
 	if (ret) {
 		printf("Warning: failed to initialize mmc dev\n");
