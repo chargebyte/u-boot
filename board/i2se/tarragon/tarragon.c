@@ -48,6 +48,10 @@ DECLARE_GLOBAL_DATA_PTR;
 	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
+#define SPI_PAD_CTRL (PAD_CTL_HYS |				\
+	PAD_CTL_SPEED_MED |		\
+	PAD_CTL_DSE_40ohm | PAD_CTL_SRE_FAST)
+
 int dram_init(void)
 {
 	gd->ram_size = imx_ddr_size();
@@ -303,11 +307,33 @@ static void boardvariants_init(void)
 		board_variant = TARRAGON_UNKNOWN;
 }
 
+static iomux_v3_cfg_t const ecspi2_pads[] = {
+	MX6_PAD_UART4_RX_DATA__ECSPI2_SS0 | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_UART4_TX_DATA__ECSPI2_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_UART5_RX_DATA__ECSPI2_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_UART5_TX_DATA__ECSPI2_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
+
+	/* RST pin */
+	MX6_PAD_LCD_DATA12__GPIO3_IO17 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+#define QCA7000_RST_GPIO	IMX_GPIO_NR(3, 17)
+
+static void qca7000_init(void)
+{
+	imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
+
+	/* De-assert QCA7000 reset */
+	gpio_direction_output(QCA7000_RST_GPIO, 1);
+}
+
 int board_early_init_f(void)
 {
 	setup_iomux_uart();
 
 	boardvariants_init();
+
+	qca7000_init();
 
 	return 0;
 }
