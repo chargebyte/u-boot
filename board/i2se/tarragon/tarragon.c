@@ -437,7 +437,7 @@ void board_init_f(ulong dummy)
 
 	ccgr_init();
 
-	/* iomux and setup of i2c */
+	/* iomux */
 	board_early_init_f();
 
 	/* setup GP timer */
