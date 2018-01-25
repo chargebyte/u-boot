@@ -71,8 +71,6 @@ static void setup_iomux_uart(void)
 
 #ifdef CONFIG_FSL_ESDHC
 
-#define TARRAGON_MMC 0
-
 static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_CSI_VSYNC__USDHC2_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_CSI_HSYNC__USDHC2_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
@@ -124,7 +122,11 @@ int board_mmc_init(bd_t *bis)
 {
 	int ret;
 
+#if TARRAGON_MMC == 0
+	imx_iomux_v3_setup_multiple_pads(usdhc2_sd_pads, ARRAY_SIZE(usdhc2_sd_pads));
+#else
 	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
+#endif
 
 	gpio_direction_output(USDHC2_RST_GPIO, 0);
 	udelay(500);

@@ -53,6 +53,14 @@
 #ifdef CONFIG_FSL_USDHC
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
 #define CONFIG_SYS_FSL_USDHC_NUM	1
+#define TARRAGON_MMC			0
+
+#if TARRAGON_MMC == 0
+#define ENV_FDT_FILE			"fdt_file=imx6ull-tarragon-sd.dtb\0"
+#else
+#define ENV_FDT_FILE			"fdt_file=imx6ull-tarragon.dtb\0"
+#endif
+
 #endif
 
 #define CONFIG_MFG_ENV_SETTINGS \
@@ -75,12 +83,12 @@
 	"console=ttymxc3\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	"fdt_file=imx6ull-tarragon.dtb\0" \
+	ENV_FDT_FILE \
 	"fdt_addr=0x83000000\0" \
 	"boot_fdt=try\0" \
 	"ip_dyn=yes\0" \
 	"bootsys=1\0" \
-	"mmcdev=1\0" \
+	"mmcdev=0\0" \
 	"mmcpart=1\0" \
 	"mmcroot=/dev/mmcblk1p1\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
