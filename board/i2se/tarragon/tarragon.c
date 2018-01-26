@@ -12,6 +12,7 @@
 #include <asm/arch/sys_proto.h>
 #include <asm/gpio.h>
 #include <asm/imx-common/iomux-v3.h>
+#include <asm/imx-common/boot_mode.h>
 #include <asm/io.h>
 #include <common.h>
 #include <fsl_esdhc.h>
@@ -389,6 +390,15 @@ int board_late_init(void)
 int checkboard(void)
 {
 	printf("Board: I2SE Tarragon (%s)\n", board_variants_names[board_variant]);
+
+	switch (get_boot_device()) {
+	case SD2_BOOT:
+		puts("Bootmode: SD card\n");
+		break;
+	case MMC2_BOOT:
+		puts("Bootmode: eMMC");
+		break;
+	}
 
 	return 0;
 }
