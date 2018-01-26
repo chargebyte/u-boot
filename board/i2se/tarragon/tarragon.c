@@ -42,9 +42,6 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define ENET_CLK_PAD_CTRL  (PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST)
 
-#define ENET_RX_PAD_CTRL  (PAD_CTL_PKE | PAD_CTL_PUE |          \
-	PAD_CTL_SPEED_HIGH   | PAD_CTL_SRE_FAST)
-
 #define OTG_ID_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
 	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
@@ -398,6 +395,9 @@ int checkboard(void)
 	case MMC2_BOOT:
 		puts("Bootmode: eMMC");
 		break;
+	default:
+		/* no output */
+		;
 	}
 
 	return 0;
