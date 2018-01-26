@@ -191,15 +191,14 @@ int board_ehci_hcd_init(int port)
 
 #ifdef CONFIG_FEC_MXC
 
-#define PHY_RST_GPIO	IMX_GPIO_NR(5, 6)
+#define ENET1_PHY_RST_GPIO	IMX_GPIO_NR(5, 6)
 
-/*
- * pin conflicts for fec1 and fec2, GPIO1_IO06 and GPIO1_IO07 can only
- * be used for ENET1 or ENET2, cannot be used for both.
- */
 static iomux_v3_cfg_t const fec1_pads[] = {
+	/* MDIO bus connects both PHYs for ENET1 and ENET2 */
 	MX6_PAD_GPIO1_IO06__ENET1_MDIO | MUX_PAD_CTRL(MDIO_PAD_CTRL),
 	MX6_PAD_GPIO1_IO07__ENET1_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
+
+	/* ENET1 RMII */
 	MX6_PAD_ENET1_TX_DATA0__ENET1_TDATA00 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET1_TX_DATA1__ENET1_TDATA01 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET1_TX_CLK__ENET1_REF_CLK1 | MUX_PAD_CTRL(ENET_CLK_PAD_CTRL),
@@ -207,7 +206,9 @@ static iomux_v3_cfg_t const fec1_pads[] = {
 	MX6_PAD_ENET1_RX_DATA0__ENET1_RDATA00 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET1_RX_DATA1__ENET1_RDATA01 | MUX_PAD_CTRL(ENET_PAD_CTRL),
 	MX6_PAD_ENET1_RX_EN__ENET1_RX_EN | MUX_PAD_CTRL(ENET_PAD_CTRL),
-	MX6_PAD_ENET1_RX_ER__ENET1_RX_ER | MUX_PAD_CTRL(ENET_PAD_CTRL),
+
+	/* ENET1 PHY reset */
+	MX6_PAD_SNVS_TAMPER6__GPIO5_IO06 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static iomux_v3_cfg_t const fec2_pads[] = {
@@ -236,10 +237,12 @@ int board_eth_init(bd_t *bis)
 {
 	setup_iomux_fec(CONFIG_FEC_ENET_DEV);
 
-	gpio_direction_output(PHY_RST_GPIO, 0);
+	/* reset PHY */
+	gpio_direction_output(ENET1_PHY_RST_GPIO, 0);
 	udelay(200);
-	gpio_set_value(PHY_RST_GPIO, 1);
+	gpio_set_value(ENET1_PHY_RST_GPIO, 1);
 
+	/* give PHY some time to get out of the reset */
 	udelay(10000);
 
 	return fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
