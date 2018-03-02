@@ -58,8 +58,8 @@ int dram_init(void)
 }
 
 static iomux_v3_cfg_t const uart4_pads[] = {
-	MX6_PAD_LCD_CLK__UART4_DCE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
-	MX6_PAD_LCD_ENABLE__UART4_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
+	MX6_PAD_LCD_CLK__UART4_DTE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
+	MX6_PAD_LCD_ENABLE__UART4_DTE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
 
 static void setup_iomux_uart(void)
