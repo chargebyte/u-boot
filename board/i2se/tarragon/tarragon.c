@@ -15,7 +15,9 @@
 #include <asm/imx-common/boot_mode.h>
 #include <asm/io.h>
 #include <common.h>
+#include <fdt_support.h>
 #include <fsl_esdhc.h>
+#include <fuse.h>
 #include <miiphy.h>
 #include <linux/sizes.h>
 #include <mmc.h>
@@ -246,6 +248,33 @@ int board_eth_init(bd_t *bis)
 	return fecmxc_initialize_multi(bis, CONFIG_FEC_ENET_DEV,
 				       CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
 }
+
+#ifdef CONFIG_OF_BOARD_SETUP
+int ft_board_setup(void *blob, bd_t *bd)
+{
+	uint8_t enetaddr[6];
+	u32 mac = 0;
+
+	enetaddr[0] = 0x00;
+	enetaddr[1] = 0x01;
+	enetaddr[2] = 0x87;
+
+	/* Read QCA7000 MAC from OCOTP_GP2 */
+	fuse_read(4, 7, &mac);
+
+	if (mac != 0) {
+		enetaddr[3] = (mac >> 16) & 0xff;
+		enetaddr[4] = (mac >>  8) & 0xff;
+		enetaddr[5] =  mac        & 0xff;
+
+		fdt_find_and_setprop(blob,
+		                     "spi1/ethernet@0",
+		                     "local-mac-address", enetaddr, 6, 1);
+	}
+
+	return 0;
+}
+#endif
 
 static int setup_fec(int fec_id)
 {
