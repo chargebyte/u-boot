@@ -379,6 +379,12 @@ config TARGET_DUCKBILL
 	select SUPPORT_SPL
 	select BOARD_EARLY_INIT_F
 
+config TARGET_EVACHARGESE
+	bool "Support evacharge-se"
+	select CPU_ARM926EJS
+	select SUPPORT_SPL
+	select BOARD_EARLY_INIT_F
+
 config TARGET_MX23_OLINUXINO
 	bool "Support mx23_olinuxino"
 	select CPU_ARM926EJS
@@ -1257,6 +1263,7 @@ source "board/h2200/Kconfig"
 source "board/hisilicon/hikey/Kconfig"
 source "board/hisilicon/poplar/Kconfig"
 source "board/i2se/duckbill/Kconfig"
+source "board/i2se/evacharge-se/Kconfig"
 source "board/imx31_phycore/Kconfig"
 source "board/isee/igep003x/Kconfig"
 source "board/olimex/mx23_olinuxino/Kconfig"
@@ -1286,7 +1293,7 @@ source "arch/arm/Kconfig.debug"
 endmenu
 
 config SPL_LDSCRIPT
-        default "arch/arm/cpu/arm926ejs/mxs/u-boot-spl.lds" if TARGET_APX4DEVKIT || TARGET_BG0900 || TARGET_M28EVK || TARGET_MX23_OLINUXINO || TARGET_MX23EVK || TARGET_MX28EVK || TARGET_DUCKBILL || TARGET_SANSA_FUZE_PLUS || TARGET_SC_SPS_1 || TARGET_TS4600 || TARGET_XFI3
+        default "arch/arm/cpu/arm926ejs/mxs/u-boot-spl.lds" if TARGET_APX4DEVKIT || TARGET_BG0900 || TARGET_M28EVK || TARGET_MX23_OLINUXINO || TARGET_MX23EVK || TARGET_MX28EVK || TARGET_DUCKBILL || TARGET_EVACHARGESE || TARGET_SANSA_FUZE_PLUS || TARGET_SC_SPS_1 || TARGET_TS4600 || TARGET_XFI3
         default "arch/arm/cpu/arm1136/u-boot-spl.lds" if CPU_ARM1136
 	default "arch/arm/cpu/armv8/u-boot-spl.lds" if ARM64
 
