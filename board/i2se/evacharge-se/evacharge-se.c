@@ -31,6 +31,9 @@ static u32 serialno;
  */
 int board_early_init_f(void)
 {
+	struct mxs_clkctrl_regs *clkctrl_regs =
+		(struct mxs_clkctrl_regs *)MXS_CLKCTRL_BASE;
+
 	/* IO0 clock at 480MHz */
 	mxs_set_ioclk(MXC_IOCLK0, 480000);
 	/* IO1 clock at 480MHz */
@@ -38,6 +41,9 @@ int board_early_init_f(void)
 
 	/* SSP0 clock at 96MHz */
 	mxs_set_sspclk(MXC_SSPCLK0, 96000, 0);
+
+	/* Disable Watchdog POR in order to avoid possible hangs after reset */
+	setbits_le32(&clkctrl_regs->hw_clkctrl_reset, CLKCTRL_RESET_WDOG_POR_DISABLE);
 
 	return 0;
 }
