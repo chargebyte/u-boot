@@ -237,7 +237,20 @@ int ft_board_setup(void *blob, bd_t *bd)
 	enetaddr[1] = 0x01;
 	enetaddr[2] = 0x87;
 
-	/* Read QCA7000 MAC from OCOTP_GP2 */
+	/* Read QCA7000 MAINS MAC from OCOTP_GP1 */
+	fuse_read(4, 6, &mac);
+
+	if (mac != 0) {
+		enetaddr[3] = (mac >> 16) & 0xff;
+		enetaddr[4] = (mac >>  8) & 0xff;
+		enetaddr[5] =  mac        & 0xff;
+
+		fdt_find_and_setprop(blob,
+		                     "spi3/ethernet@0",
+		                     "local-mac-address", enetaddr, 6, 1);
+	}
+
+	/* Read QCA7000 CP MAC from OCOTP_GP2 */
 	fuse_read(4, 7, &mac);
 
 	if (mac != 0) {
