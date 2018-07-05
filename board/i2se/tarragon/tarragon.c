@@ -349,7 +349,7 @@ static void boardvariants_init(void)
 		board_variant = TARRAGON_UNKNOWN;
 }
 
-static iomux_v3_cfg_t const ecspi2_pads[] = {
+static iomux_v3_cfg_t const qca7000_cp_pads[] = {
 	MX6_PAD_UART4_RX_DATA__ECSPI2_SS0 | MUX_PAD_CTRL(SPI_PAD_CTRL),
 	MX6_PAD_UART4_TX_DATA__ECSPI2_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
 	MX6_PAD_UART5_RX_DATA__ECSPI2_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
@@ -359,14 +359,27 @@ static iomux_v3_cfg_t const ecspi2_pads[] = {
 	MX6_PAD_LCD_DATA12__GPIO3_IO17 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-#define QCA7000_RST_GPIO	IMX_GPIO_NR(3, 17)
+static iomux_v3_cfg_t const qca7000_mains_pads[] = {
+	MX6_PAD_ENET2_RX_ER__ECSPI4_SS0 | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_ENET2_TX_DATA1__ECSPI4_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_ENET2_TX_CLK__ECSPI4_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_ENET2_TX_EN__ECSPI4_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
+
+	/* RST pin */
+	MX6_PAD_SNVS_TAMPER7__GPIO5_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+#define QCA7000_CP_RST_GPIO	IMX_GPIO_NR(3, 17)
+#define QCA7000_MAINS_RST_GPIO	IMX_GPIO_NR(5, 7)
 
 static void qca7000_init(void)
 {
-	imx_iomux_v3_setup_multiple_pads(ecspi2_pads, ARRAY_SIZE(ecspi2_pads));
+	imx_iomux_v3_setup_multiple_pads(qca7000_cp_pads, ARRAY_SIZE(qca7000_cp_pads));
+	imx_iomux_v3_setup_multiple_pads(qca7000_mains_pads, ARRAY_SIZE(qca7000_mains_pads));
 
-	/* De-assert QCA7000 reset */
-	gpio_direction_output(QCA7000_RST_GPIO, 1);
+	/* De-assert QCA7000 resets */
+	gpio_direction_output(QCA7000_CP_RST_GPIO, 1);
+	gpio_direction_output(QCA7000_MAINS_RST_GPIO, 1);
 }
 
 int board_early_init_f(void)
