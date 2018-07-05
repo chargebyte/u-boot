@@ -299,16 +299,16 @@ static int setup_fec(int fec_id)
 #endif
 
 static iomux_v3_cfg_t const boardvariant_pads[] = {
-	MX6_PAD_NAND_WP_B__GPIO4_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_NAND_DATA07__GPIO4_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	MX6_PAD_NAND_DATA06__GPIO4_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_NAND_CLE__GPIO4_IO15 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_NAND_CE0_B__GPIO4_IO13 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_NAND_CE1_B__GPIO4_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_NAND_DQS__GPIO4_IO16 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-#define BOARD_VARIANT_GPIO0	IMX_GPIO_NR(4, 11)
-#define BOARD_VARIANT_GPIO1	IMX_GPIO_NR(4, 10)
-#define BOARD_VARIANT_GPIO2	IMX_GPIO_NR(4, 9)
-#define BOARD_VARIANT_GPIO3	IMX_GPIO_NR(4, 8)
+#define BOARD_VARIANT_GPIO0	IMX_GPIO_NR(4, 15)
+#define BOARD_VARIANT_GPIO1	IMX_GPIO_NR(4, 13)
+#define BOARD_VARIANT_GPIO2	IMX_GPIO_NR(4, 14)
+#define BOARD_VARIANT_GPIO3	IMX_GPIO_NR(4, 16)
 
 static enum board_variants {
 	TARRAGON_DEFAULT,
@@ -337,11 +337,12 @@ static void boardvariants_init(void)
 	gpio_direction_input(BOARD_VARIANT_GPIO2);
 	gpio_direction_input(BOARD_VARIANT_GPIO3);
 
+	/* Reverse GPIO order, because schematics have a special assignment */
 	board_variant =
-		gpio_get_value(BOARD_VARIANT_GPIO0) << 0 |
-		gpio_get_value(BOARD_VARIANT_GPIO1) << 1 |
-		gpio_get_value(BOARD_VARIANT_GPIO2) << 2 |
-		gpio_get_value(BOARD_VARIANT_GPIO3) << 3;
+		gpio_get_value(BOARD_VARIANT_GPIO3) << 0 |
+		gpio_get_value(BOARD_VARIANT_GPIO2) << 1 |
+		gpio_get_value(BOARD_VARIANT_GPIO1) << 2 |
+		gpio_get_value(BOARD_VARIANT_GPIO0) << 3;
 
 	/* in case hardware is populated wrong or variant is not (yet) known */
 	if (board_variant > TARRAGON_UNKNOWN)
