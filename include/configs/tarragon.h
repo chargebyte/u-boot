@@ -119,7 +119,7 @@
 	"BOOT_B_LEFT=3\0" \
 	"mmcdev=0\0" \
 	"mmcpart=1\0" \
-	"mmcroot=/dev/mmcblk1p1\0" \
+	"mmcroot=/dev/mmcblk0p1\0" \
 	"mmcargs=setenv bootargs ${bootargs} console=${console},${baudrate} panic=1\0" \
 	"common_mmcargs=rootfstype=ext4 rootwait\0" \
 	"loadimage=ext4load mmc ${mmcdev}:${mmcpart} ${loadaddr} /boot/${image}\0" \
@@ -137,7 +137,7 @@
 					"setexpr BOOT_A_LEFT ${BOOT_A_LEFT} - 1; " \
 					"echo \"Found valid slot A, ${BOOT_A_LEFT} attempts remaining\"; " \
 					"setenv mmcpart 1; " \
-					"setenv mmcroot /dev/mmcblk1p${mmcpart}; " \
+					"setenv mmcroot /dev/mmcblk0p${mmcpart}; " \
 					"setenv bootargs ${common_mmcargs} root=${mmcroot} rauc.slot=A; " \
 				"fi; " \
 			"elif test \"x${BOOT_SLOT}\" = xB; then " \
@@ -145,7 +145,7 @@
 					"setexpr BOOT_B_LEFT ${BOOT_B_LEFT} - 1; " \
 					"echo \"Found valid slot B, ${BOOT_B_LEFT} attempts remaining\"; " \
 					"setenv mmcpart 2; " \
-					"setenv mmcroot /dev/mmcblk1p${mmcpart}; " \
+					"setenv mmcroot /dev/mmcblk0p${mmcpart}; " \
 					"setenv bootargs ${common_mmcargs} root=${mmcroot} rauc.slot=B; " \
 				"fi; " \
 			"fi; " \
