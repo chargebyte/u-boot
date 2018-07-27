@@ -54,11 +54,7 @@
 #define CONFIG_SYS_FSL_USDHC_NUM	1
 #define TARRAGON_MMC			0
 
-#if TARRAGON_MMC == 0
-#define ENV_FDT_FILE			"fdt_file=imx6ull-tarragon-init.dtb\0"
-#else
 #define ENV_FDT_FILE			"fdt_file=imx6ull-tarragon-master.dtb\0"
-#endif
 
 #endif
 
