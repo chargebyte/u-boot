@@ -53,13 +53,17 @@
 	str r1, [r0, #0x1C]
 	ldr r1, =0xA1390003
 	str r1, [r0, #0x800]
-	ldr r1, =0x00000004
-	str r1, [r0, #0x80C]
 	ldr r1, =0x00000000
+	str r1, [r0, #0x80C]
+	ldr r1, =0x000F000F
+	str r1, [r0, #0x810]
+	ldr r1, =0x4160015C
 	str r1, [r0, #0x83C]
-	ldr r1, =0x40404040
+	ldr r1, =0x00000000
+	str r1, [r0, #0x840]
+	ldr r1, =0x40403236
 	str r1, [r0, #0x848]
-	ldr r1, =0x40404040
+	ldr r1, =0x40403832
 	str r1, [r0, #0x850]
 	ldr r1, =0x33333333
 	str r1, [r0, #0x81C]
