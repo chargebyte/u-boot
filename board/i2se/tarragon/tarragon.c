@@ -87,18 +87,8 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-static iomux_v3_cfg_t const usdhc2_sd_pads[] = {
-	MX6_PAD_NAND_RE_B__USDHC2_CLK | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_NAND_WE_B__USDHC2_CMD | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_NAND_DATA00__USDHC2_DATA0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_NAND_DATA01__USDHC2_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_NAND_DATA02__USDHC2_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-	MX6_PAD_NAND_DATA03__USDHC2_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-};
-
-static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 8, 0, 1 };
-
-static struct fsl_esdhc_cfg usdhc2_sd_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 0 };
+/* we default to 4-bit bus width and no-1v8 to be compatible with V0R3 */
+static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 0 };
 
 #define USDHC2_RST_GPIO	IMX_GPIO_NR(4, 10)
 
@@ -122,23 +112,15 @@ int board_mmc_init(bd_t *bis)
 {
 	int ret;
 
-#if TARRAGON_MMC == 0
-	imx_iomux_v3_setup_multiple_pads(usdhc2_sd_pads, ARRAY_SIZE(usdhc2_sd_pads));
-#else
 	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
-#endif
 
 	gpio_direction_output(USDHC2_RST_GPIO, 0);
 	udelay(500);
 	gpio_direction_output(USDHC2_RST_GPIO, 1);
 
-#if TARRAGON_MMC == 0
-	usdhc2_sd_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-	ret = fsl_esdhc_initialize(bis, &usdhc2_sd_cfg);
-#else
 	usdhc2_emmc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
 	ret = fsl_esdhc_initialize(bis, &usdhc2_emmc_cfg);
-#endif
+
 #ifndef CONFIG_SPL_BUILD
 	if (ret) {
 		printf("Warning: failed to initialize mmc dev\n");

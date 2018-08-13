@@ -54,7 +54,6 @@
 #ifdef CONFIG_FSL_USDHC
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
 #define CONFIG_SYS_FSL_USDHC_NUM	1
-#define TARRAGON_MMC			0
 #endif
 
 /* Boot Linux */
