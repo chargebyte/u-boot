@@ -57,6 +57,15 @@
 #define TARRAGON_MMC			0
 #endif
 
+/* Boot Linux */
+#define CONFIG_BOOT_RETRY_TIME		120	/* retry autoboot after 120 seconds */
+#define CONFIG_AUTOBOOT_KEYED
+#define CONFIG_AUTOBOOT_PROMPT		"Autobooting in %d seconds, " \
+					"press <c> to stop\n"
+#define CONFIG_AUTOBOOT_DELAY_STR	"\x63"	/* allows retry after retry time */
+#define CONFIG_AUTOBOOT_STOP_STR	" "	/* stop autoboot with <Space> */
+#define CONFIG_RESET_TO_RETRY			/* reset board to retry booting */
+
 #define CONFIG_MFG_ENV_SETTINGS \
 	"mfgtool_args=setenv bootargs console=${console},${baudrate} " \
 		"rdinit=/linuxrc " \
