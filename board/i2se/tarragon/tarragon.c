@@ -364,6 +364,23 @@ static void qca7000_init(void)
 	gpio_direction_output(QCA7000_MAINS_RST_GPIO, 1);
 }
 
+static iomux_v3_cfg_t const motor_1_drv_pads[] = {
+	MX6_PAD_LCD_DATA02__GPIO3_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_LCD_DATA03__GPIO3_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+#define MOTOR_1_DRV_IN1	IMX_GPIO_NR(3, 7)
+#define MOTOR_1_DRV_IN2	IMX_GPIO_NR(3, 8)
+
+static void motor_1_drv_init(void)
+{
+	imx_iomux_v3_setup_multiple_pads(motor_1_drv_pads, ARRAY_SIZE(motor_1_drv_pads));
+
+	/* start charging caps */
+	gpio_direction_output(MOTOR_1_DRV_IN1, 1);
+	gpio_direction_output(MOTOR_1_DRV_IN2, 0);
+}
+
 int board_early_init_f(void)
 {
 	setup_iomux_uart();
@@ -371,6 +388,8 @@ int board_early_init_f(void)
 	boardvariants_init();
 
 	qca7000_init();
+
+	motor_1_drv_init();
 
 	return 0;
 }
