@@ -41,6 +41,10 @@
 
 #define CONFIG_MISC_INIT_R
 
+#define CONFIG_CMD_UNZIP
+#undef CONFIG_CMD_EXT2
+#undef CONFIG_CMD_FAT
+
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		(16 * SZ_1M)
 
@@ -57,6 +61,10 @@
 #endif
 
 /* Boot Linux */
+#ifdef CONFIG_BOOTDELAY
+#undef CONFIG_BOOTDELAY
+#endif
+#define CONFIG_BOOTDELAY		1
 #define CONFIG_BOOT_RETRY_TIME		120	/* retry autoboot after 120 seconds */
 #define CONFIG_AUTOBOOT_KEYED
 #define CONFIG_AUTOBOOT_PROMPT		"Autobooting in %d seconds, " \
