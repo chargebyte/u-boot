@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 I2SE GmbH
+ * Copyright (C) 2017-2018 I2SE GmbH
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -328,6 +328,15 @@ static const char * const board_variants_names[] = {
 	"Unknown",
 };
 
+static const char * const board_variants_default_dtb_names[] = {
+	NULL,
+	"imx6ull-tarragon-master.dtb",
+	"imx6ull-tarragon-slave.dtb",
+	"imx6ull-tarragon-micro.dtb",
+	/* insert new variant names before this line */
+	NULL
+};
+
 static void boardvariants_init(void)
 {
 	imx_iomux_v3_setup_multiple_pads(boardvariant_pads, ARRAY_SIZE(boardvariant_pads));
@@ -433,6 +442,15 @@ int checkboard(void)
 		/* no output */
 		;
 	}
+
+	return 0;
+}
+
+int misc_init_r(void)
+{
+	/* guess DT blob if not already set in environment */
+	if (!getenv("fdt_file") && board_variants_default_dtb_names[board_variant] != NULL)
+		setenv("fdt_file", board_variants_default_dtb_names[board_variant]);
 
 	return 0;
 }

@@ -39,6 +39,8 @@
 #define CONFIG_DISPLAY_CPUINFO
 #define CONFIG_DISPLAY_BOARDINFO
 
+#define CONFIG_MISC_INIT_R
+
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		(16 * SZ_1M)
 
@@ -53,9 +55,6 @@
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
 #define CONFIG_SYS_FSL_USDHC_NUM	1
 #define TARRAGON_MMC			0
-
-#define ENV_FDT_FILE			"fdt_file=imx6ull-tarragon-master.dtb\0"
-
 #endif
 
 #define CONFIG_MFG_ENV_SETTINGS \
@@ -111,7 +110,6 @@
 	"console=ttymxc3\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
-	ENV_FDT_FILE \
 	"fdt_addr=0x83000000\0" \
 	"ip_dyn=yes\0" \
 	"BOOT_ORDER=A B\0" \
