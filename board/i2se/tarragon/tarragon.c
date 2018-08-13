@@ -427,7 +427,7 @@ int checkboard(void)
 		puts("Bootmode: SD card\n");
 		break;
 	case MMC2_BOOT:
-		puts("Bootmode: eMMC");
+		puts("Bootmode: eMMC\n");
 		break;
 	default:
 		/* no output */
