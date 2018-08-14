@@ -381,6 +381,26 @@ static void motor_1_drv_init(void)
 	gpio_direction_output(MOTOR_1_DRV_IN2, 0);
 }
 
+static iomux_v3_cfg_t const led_pads[] = {
+	MX6_PAD_LCD_DATA09__GPIO3_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_LCD_DATA10__GPIO3_IO15 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_LCD_DATA14__GPIO3_IO19 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+#define LED_GREEN	IMX_GPIO_NR(3, 14)
+#define LED_YELLOW	IMX_GPIO_NR(3, 15)
+#define LED_RED		IMX_GPIO_NR(3, 19)
+
+static void led_init(void)
+{
+	imx_iomux_v3_setup_multiple_pads(led_pads, ARRAY_SIZE(led_pads));
+
+	/* enable red LED to indicate a running bootloader */
+	gpio_direction_output(LED_GREEN, 0);
+	gpio_direction_output(LED_YELLOW, 0);
+	gpio_direction_output(LED_RED, 1);
+}
+
 int board_early_init_f(void)
 {
 	setup_iomux_uart();
@@ -390,6 +410,8 @@ int board_early_init_f(void)
 	qca7000_init();
 
 	motor_1_drv_init();
+
+	led_init();
 
 	return 0;
 }
@@ -440,9 +462,19 @@ int checkboard(void)
 
 int misc_init_r(void)
 {
+	char *s;
+
 	/* guess DT blob if not already set in environment */
 	if (!getenv("fdt_file") && board_variants_default_dtb_names[board_variant] != NULL)
 		setenv("fdt_file", board_variants_default_dtb_names[board_variant]);
+
+	/* print serial number if available */
+	s = getenv("serial#");
+	if (s && s[0]) {
+		puts("Serial: ");
+		puts(s);
+		puts("\n");
+	}
 
 	return 0;
 }
