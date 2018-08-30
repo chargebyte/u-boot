@@ -336,6 +336,12 @@ config TARGET_MX6ULL_14X14_EVK
 	select DM
 	select DM_THERMAL
 
+config TARGET_TARRAGON
+	bool "Support tarragon"
+	select MX6ULL
+	select DM
+	select DM_THERMAL
+
 config TARGET_MX6ULL_9X9_EVK
 	bool "Support mx6ull_9x9_evk"
 	select BOARD_LATE_INIT
@@ -502,6 +508,7 @@ source "board/freescale/mx6ull_ddr3_arm2/Kconfig"
 source "board/grinn/liteboard/Kconfig"
 source "board/phytec/pcm058/Kconfig"
 source "board/gateworks/gw_ventana/Kconfig"
+source "board/i2se/tarragon/Kconfig"
 source "board/kosagi/novena/Kconfig"
 source "board/samtec/vining_2000/Kconfig"
 source "board/liebherr/mccmon6/Kconfig"

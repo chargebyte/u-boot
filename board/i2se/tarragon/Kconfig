@@ -1,0 +1,12 @@
+if TARGET_TARRAGON
+
+config SYS_BOARD
+	default "tarragon"
+
+config SYS_VENDOR
+	default "i2se"
+
+config SYS_CONFIG_NAME
+	default "tarragon"
+
+endif
