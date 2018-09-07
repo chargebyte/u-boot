@@ -83,12 +83,15 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_NAND_DATA06__USDHC2_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX6_PAD_NAND_DATA07__USDHC2_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 
+	/* VSELECT */
+	MX6_PAD_GPIO1_IO08__USDHC2_VSELECT | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+
 	/* RST_B */
 	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-/* we default to 4-bit bus width and no-1v8 to be compatible with V0R3 */
-static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 0 };
+/* we default to 4-bit bus width and 1v8 */
+static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 1 };
 
 #define USDHC2_RST_GPIO	IMX_GPIO_NR(4, 10)
 
