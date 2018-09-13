@@ -27,30 +27,30 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#define UART_PAD_CTRL  (PAD_CTL_PKE | PAD_CTL_PUE |		\
-	PAD_CTL_PUS_100K_UP | PAD_CTL_SPEED_MED |		\
+#define UART_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |              \
+	PAD_CTL_PUS_100K_UP | PAD_CTL_SPEED_MED |               \
 	PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
-#define USDHC_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
-	PAD_CTL_PUS_22K_UP  | PAD_CTL_SPEED_LOW |		\
+#define USDHC_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |             \
+	PAD_CTL_PUS_22K_UP  | PAD_CTL_SPEED_LOW |               \
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
 #define ENET_PAD_CTRL  (PAD_CTL_PUS_100K_UP | PAD_CTL_PUE |     \
-	PAD_CTL_SPEED_HIGH   |                                  \
+	PAD_CTL_SPEED_HIGH  |                                   \
 	PAD_CTL_DSE_48ohm   | PAD_CTL_SRE_FAST)
 
-#define MDIO_PAD_CTRL  (PAD_CTL_PUS_100K_UP | PAD_CTL_PUE |     \
+#define MDIO_PAD_CTRL (PAD_CTL_PUS_100K_UP | PAD_CTL_PUE |      \
 	PAD_CTL_DSE_48ohm   | PAD_CTL_SRE_FAST | PAD_CTL_ODE)
 
-#define ENET_CLK_PAD_CTRL  (PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST)
+#define ENET_CLK_PAD_CTRL (PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST)
 
-#define OTG_ID_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
-	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
+#define OTG_ID_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |            \
+	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |               \
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
-#define SPI_PAD_CTRL (PAD_CTL_HYS |				\
-	PAD_CTL_SPEED_MED |		\
-	PAD_CTL_DSE_40ohm | PAD_CTL_SRE_FAST)
+#define SPI_PAD_CTRL (PAD_CTL_HYS |                             \
+	PAD_CTL_SPEED_MED   |                                   \
+	PAD_CTL_DSE_40ohm   | PAD_CTL_SRE_FAST)
 
 int dram_init(void)
 {
@@ -84,7 +84,7 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_NAND_DATA07__USDHC2_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 
 	/* VSELECT */
-	MX6_PAD_GPIO1_IO08__USDHC2_VSELECT | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+	MX6_PAD_GPIO1_IO08__USDHC2_VSELECT | MUX_PAD_CTRL(NO_PAD_CTRL),
 
 	/* RST_B */
 	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -146,7 +146,7 @@ static iomux_v3_cfg_t const usb_otg_pads[] = {
 static void setup_usb(void)
 {
 	imx_iomux_v3_setup_multiple_pads(usb_otg_pads,
-					 ARRAY_SIZE(usb_otg_pads));
+	                                 ARRAY_SIZE(usb_otg_pads));
 }
 
 int board_usb_phy_mode(int port)
@@ -165,7 +165,7 @@ int board_ehci_hcd_init(int port)
 		return -EINVAL;
 
 	usbnc_usb_ctrl = (u32 *)(USB_BASE_ADDR + USB_OTHERREGS_OFFSET +
-				 port * 4);
+	                         port * 4);
 
 	/* Set Power polarity */
 	setbits_le32(usbnc_usb_ctrl, UCTRL_PWR_POL);
@@ -179,7 +179,7 @@ int board_ehci_hcd_init(int port)
 #define ENET1_PHY_RST_GPIO	IMX_GPIO_NR(5, 6)
 
 static iomux_v3_cfg_t const fec1_pads[] = {
-	/* MDIO bus connects both PHYs for ENET1 and ENET2 */
+	/* ENET1 MDIO bus connects PHY for ENET1 */
 	MX6_PAD_GPIO1_IO06__ENET1_MDIO | MUX_PAD_CTRL(MDIO_PAD_CTRL),
 	MX6_PAD_GPIO1_IO07__ENET1_MDC | MUX_PAD_CTRL(ENET_PAD_CTRL),
 
@@ -209,7 +209,7 @@ int board_eth_init(bd_t *bis)
 	udelay(10000);
 
 	return fecmxc_initialize_multi(bis, 0,
-				       CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
+	                               CONFIG_FEC_MXC_PHYADDR, IMX_FEC_BASE);
 }
 
 #ifdef CONFIG_OF_BOARD_SETUP
