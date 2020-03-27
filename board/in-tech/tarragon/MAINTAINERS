@@ -1,0 +1,7 @@
+TARRAGON BOARD
+M:	Michael Heimpold <michael.heimpold@in-tech.com>
+M:	Stefan Wahren <stefan.wahren@in-tech.com>
+S:	Maintained
+F:	board/in-tech/tarragon/
+F:	include/configs/tarragon.h
+F:	configs/tarragon_defconfig

@@ -643,6 +643,7 @@ dtb-$(CONFIG_MX6ULL) += \
 	imx6ull-colibri.dtb \
 	imx6ull-phycore-segin.dtb \
 	imx6ull-dart-6ul.dtb \
+	imx6ull-tarragon-master.dtb \
 	imx6ulz-14x14-evk.dtb
 
 dtb-$(CONFIG_ARCH_MX6) += \

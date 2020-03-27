@@ -38,4 +38,7 @@ static inline void iomuxc_set_rgmii_io_voltage(int io_vol)
 	__raw_writel(io_vol, IOMUXC_SW_PAD_CTL_GRP_DDR_TYPE_RGMII);
 }
 
+enum boot_device get_boot_device(void);
+void set_wdog_reset(struct wdog_regs *wdog);
+
 #endif /* __SYS_PROTO_IMX6_ */

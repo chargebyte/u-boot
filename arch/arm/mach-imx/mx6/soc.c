@@ -585,6 +585,71 @@ const struct boot_mode soc_boot_modes[] = {
 };
 #endif
 
+enum boot_device get_boot_device(void)
+{
+	enum boot_device boot_dev = UNKNOWN_BOOT;
+	uint soc_sbmr = readl(SRC_BASE_ADDR + 0x4);
+	uint bt_mem_ctl = (soc_sbmr & 0x000000FF) >> 4 ;
+	uint bt_mem_type = (soc_sbmr & 0x00000008) >> 3;
+	uint bt_dev_port = (soc_sbmr & 0x00001800) >> 11;
+
+	switch (bt_mem_ctl) {
+	case 0x0:
+		if (bt_mem_type)
+			boot_dev = ONE_NAND_BOOT;
+		else
+			boot_dev = WEIM_NOR_BOOT;
+		break;
+	case 0x2:
+			boot_dev = SATA_BOOT;
+		break;
+	case 0x3:
+		if (bt_mem_type)
+			boot_dev = I2C_BOOT;
+		else
+			boot_dev = SPI_NOR_BOOT;
+		break;
+	case 0x4:
+	case 0x5:
+		boot_dev = bt_dev_port + SD1_BOOT;
+		break;
+	case 0x6:
+	case 0x7:
+		boot_dev = bt_dev_port + MMC1_BOOT;
+		break;
+	case 0x8 ... 0xf:
+		boot_dev = NAND_BOOT;
+		break;
+	default:
+		boot_dev = UNKNOWN_BOOT;
+		break;
+	}
+
+    return boot_dev;
+}
+
+void set_wdog_reset(struct wdog_regs *wdog)
+{
+	u32 reg = readw(&wdog->wcr);
+	/*
+	 * use WDOG_B mode to reset external pmic because it's risky for the
+	 * following watchdog reboot in case of cpu freq at lowest 400Mhz with
+	 * ldo-bypass mode. Because boot frequency maybe higher 800Mhz i.e. So
+	 * in ldo-bypass mode watchdog reset will only triger POR reset, not
+	 * WDOG reset. But below code depends on hardware design, if HW didn't
+	 * connect WDOG_B pin to external pmic such as i.mx6slevk, we can skip
+	 * these code since it assumed boot from 400Mhz always.
+	 */
+	reg = readw(&wdog->wcr);
+	reg |= 1 << 3;
+	/*
+	 * WDZST bit is write-once only bit. Align this bit in kernel,
+	 * otherwise kernel code will have no chance to set this bit.
+	 */
+	reg |= 1 << 0;
+	writew(reg, &wdog->wcr);
+}
+
 void reset_misc(void)
 {
 #ifndef CONFIG_SPL_BUILD
