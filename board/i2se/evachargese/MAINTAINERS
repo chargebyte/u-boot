@@ -1,0 +1,7 @@
+I2SE EVACHARGE SE BOARD
+M:	Michael Heimpold <michael.heimpold@in-tech.com>
+M:	Stefan Wahren <stefan.wahren@in-tech.com>
+S:	Maintained
+F:	board/i2se/evachargese/
+F:	include/configs/evachargese.h
+F:	configs/evachargese_defconfig
