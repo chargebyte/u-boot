@@ -408,6 +408,7 @@ int misc_init_r(void)
 
 	env_set("board_variant", board_variants_names[board_variant]);
 	env_set("board_revision", board_revision_is_v0r3 ? "V0R3" : "V0R4/V0R5");
+	env_set("reset_cause", get_reset_cause());
 
 	/* guess DT blob if not already set in environment */
 	if (!env_get("fdt_file") && board_variants_default_dtb_names[board_variant] != NULL)
