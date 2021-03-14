@@ -35,19 +35,13 @@
 #define CONFIG_GATEWAYIP	192.168.1.254
 
 /* Boot Linux */
-#define CONFIG_BOOTDELAY	1
 #define CONFIG_BOOTFILE		"zImage"
 #define CONFIG_LOADADDR		0x42000000
 #define CONFIG_SYS_LOAD_ADDR	CONFIG_LOADADDR
 #define CONFIG_REVISION_TAG
 #define CONFIG_SERIAL_TAG
 #define CONFIG_OF_BOARD_SETUP
-#define CONFIG_BOOT_RETRY_TIME		120	/* retry autoboot after 120 seconds */
-#define CONFIG_AUTOBOOT_KEYED
-#define CONFIG_AUTOBOOT_PROMPT		"Autobooting in %d seconds, " \
-					"press <c> to stop\n"
-#define CONFIG_AUTOBOOT_DELAY_STR	"\x63"	/* allows retry after retry time */
-#define CONFIG_AUTOBOOT_STOP_STR	" "	/* stop autoboot with <Space> */
+#define CONFIG_BOOT_RETRY_TIME		10	/* retry autoboot after 10 seconds */
 #define CONFIG_RESET_TO_RETRY			/* reset board to retry booting */
 
 /* Extra Environment */
