@@ -29,7 +29,7 @@
 #endif
 
 /* Boot Linux */
-#define CONFIG_BOOT_RETRY_TIME		120	/* retry autoboot after 120 seconds */
+#define CONFIG_BOOT_RETRY_TIME		10	/* retry autoboot after 10 seconds */
 #define CONFIG_RESET_TO_RETRY			/* reset board to retry booting */
 
 #define CONFIG_MFG_ENV_SETTINGS \
