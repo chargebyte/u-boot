@@ -92,6 +92,7 @@ static enum board_variants {
 	TARRAGON_MASTER,
 	TARRAGON_SLAVE,
 	TARRAGON_MICRO,
+	TARRAGON_SLAVEXT,
 	/* insert new variants before this line */
 	TARRAGON_UNKNOWN,
 } board_variant;
@@ -101,6 +102,7 @@ static const char * const board_variants_names[] = {
 	"Master",
 	"Slave",
 	"Micro",
+	"SlaveXT",
 	/* insert new variant names before this line */
 	"Unknown",
 };
@@ -110,6 +112,7 @@ static const char * const board_variants_default_dtb_names[] = {
 	"imx6ull-tarragon-master.dtb",
 	"imx6ull-tarragon-slave.dtb",
 	"imx6ull-tarragon-micro.dtb",
+	"imx6ull-tarragon-slavext.dtb",
 	/* insert new variant names before this line */
 	NULL
 };
@@ -289,7 +292,9 @@ static iomux_v3_cfg_t const qca7000_mains_pads[] = {
 
 static void qca7000_init(void)
 {
-	if (board_variant == TARRAGON_MASTER || board_variant == TARRAGON_SLAVE) {
+	if (board_variant == TARRAGON_MASTER ||
+	    board_variant == TARRAGON_SLAVE ||
+	    board_variant == TARRAGON_SLAVEXT) {
 		/* setup pin muxing */
 		imx_iomux_v3_setup_multiple_pads(qca7000_cp_pads, ARRAY_SIZE(qca7000_cp_pads));
 		/* request reset GPIO */
@@ -371,7 +376,9 @@ int board_init(void)
 	led_init();
 
 #ifdef	CONFIG_FEC_MXC
-	if (board_variant == TARRAGON_MASTER || board_variant == TARRAGON_SLAVE)
+	if (board_variant == TARRAGON_MASTER ||
+	    board_variant == TARRAGON_SLAVE ||
+	    board_variant == TARRAGON_SLAVEXT)
 		setup_fec(CONFIG_FEC_ENET_DEV);
 #endif
 
