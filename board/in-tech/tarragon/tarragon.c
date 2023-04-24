@@ -197,6 +197,7 @@ int ft_board_setup(void *blob, bd_t *bd)
 {
 	uint8_t enetaddr[6];
 	u32 mac = 0;
+	char *model;
 
 	enetaddr[0] = 0x00;
 	enetaddr[1] = 0x01;
@@ -231,13 +232,29 @@ int ft_board_setup(void *blob, bd_t *bd)
 		                     "local-mac-address", enetaddr, 6, 1);
 	}
 
-	if (!board_revision_is_v0r3) {
-		/* for board revision > V0R3: switch off wdog1 and enable wdog2 */
-		fdt_set_status_by_alias(blob, "/soc/aips-bus@02000000/wdog@020bc000", FDT_STATUS_DISABLED, 0);
-		fdt_set_status_by_alias(blob, "/soc/aips-bus@02000000/wdog@020c0000", FDT_STATUS_OKAY, 0);
+	/* DTs for kernel 4.9 used "I2SE" in model string, newer versions use "chargebyte".
+	 * We use this to be backwards compatible since the logic changed: for newer DTs
+	 * the DTs are preset for >=V0R4, the older ones were preset for <=V0R3.
+	 */
+	model = fdt_getprop(blob, 0, "model", NULL);
+	if (model) {
+		if (strstr(model, "I2SE") && !board_revision_is_v0r3) {
+			/* for board revision > V0R3: switch off wdog1 and enable wdog2 */
+			fdt_set_status_by_alias(blob, "/soc/aips-bus@02000000/wdog@020bc000", FDT_STATUS_DISABLED, 0);
+			fdt_set_status_by_alias(blob, "/soc/aips-bus@02000000/wdog@020c0000", FDT_STATUS_OKAY, 0);
 
-		/* enable USB on extension header */
-		fdt_set_status_by_alias(blob, "/soc/aips-bus@02100000/usb@02184200", FDT_STATUS_OKAY, 0);
+			/* enable USB on JP3 extension header */
+			fdt_set_status_by_alias(blob, "/soc/aips-bus@02100000/usb@02184200", FDT_STATUS_OKAY, 0);
+		}
+
+		if (strstr(model, "chargebyte") && board_revision_is_v0r3) {
+			/* for board revision <=V0R3: switch on wdog1 and disable wdog2 */
+			fdt_set_status_by_alias(blob, "/soc/bus@2000000/watchdog@20bc000", FDT_STATUS_OKAY, 0);
+			fdt_set_status_by_alias(blob, "/soc/bus@2000000/watchdog@20c0000", FDT_STATUS_DISABLED, 0);
+
+			/* disable USB on JP3 extension header: is not present */
+			fdt_set_status_by_alias(blob, "/soc/bus@2100000/usb@2184200", FDT_STATUS_DISABLED, 0);
+		}
 	}
 
 	return 0;
