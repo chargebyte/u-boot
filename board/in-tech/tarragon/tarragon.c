@@ -384,7 +384,7 @@ int board_init(void)
 	boardvariants_init();
 	printf("Board: chargebyte Tarragon %s (%s)\n",
 	       board_variants_names[board_variant],
-	       board_revision_is_v0r3 ? "V0R3" : "V0R4/V0R5");
+	       board_revision_is_v0r3 ? "V0R3" : ">= V0R4");
 
 	motor_1_drv_init();
 
@@ -431,7 +431,7 @@ int misc_init_r(void)
 	char *s;
 
 	env_set("board_variant", board_variants_names[board_variant]);
-	env_set("board_revision", board_revision_is_v0r3 ? "V0R3" : "V0R4/V0R5");
+	env_set("board_revision", board_revision_is_v0r3 ? "V0R3" : ">=V0R4");
 	env_set("reset_cause", get_reset_cause());
 
 	/* guess DT blob if not already set in environment */
