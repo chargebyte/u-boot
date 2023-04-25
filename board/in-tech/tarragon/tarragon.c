@@ -382,7 +382,7 @@ int board_init(void)
 
 	/* run board variant detection first to populate board_variant variable */
 	boardvariants_init();
-	printf("Board: in-tech Tarragon %s (%s)\n",
+	printf("Board: chargebyte Tarragon %s (%s)\n",
 	       board_variants_names[board_variant],
 	       board_revision_is_v0r3 ? "V0R3" : "V0R4/V0R5");
 
