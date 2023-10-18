@@ -257,6 +257,21 @@ int ft_board_setup(void *blob, bd_t *bd)
 		}
 	}
 
+	/* all DTs ship with property 'disable-over-current' for USB port since switching
+	 * the VBUS power could crash the boards; board revision V1R2a and later have
+	 * stronger VBUS power supply, so we can allow reporting/switching; in cause we
+	 * do not find the node (e.g. older DTs for kernel 4.9), we just do nothing
+	 * and leave everything alone, same in case the environment variable is not set
+	 * at all or has other value than one
+	 */
+	if (env_get_ulong("enable-usb-oc-detection", 0, 0) == 1) {
+		int nodeoff = fdt_path_offset(blob, "/soc/bus@2100000/usb@2184000");
+
+		/* we found the node, so delete the property */
+		if (nodeoff >= 0)
+			fdt_delprop(blob, nodeoff, "disable-over-current");
+	}
+
 	return 0;
 }
 #endif
