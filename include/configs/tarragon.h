@@ -219,12 +219,8 @@
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
 /* Flash and environment organization */
-#define CONFIG_ENV_IS_IN_MMC
-#define CONFIG_SYS_REDUNDAND_ENVIRONMENT
-#define CONFIG_SYS_MMC_ENV_DEV		0
-#define CONFIG_ENV_SIZE			SZ_128K
-#define CONFIG_ENV_OFFSET		(1 * SZ_1M)
-#define CONFIG_ENV_OFFSET_REDUND	(2 * SZ_1M)
+#define CONFIG_ENV_IS_NOWHERE
+#define CONFIG_ENV_SIZE                        SZ_128K
 #define CONFIG_ENV_OVERWRITE
 
 /* USB Configs */
