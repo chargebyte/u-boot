@@ -90,8 +90,9 @@ static iomux_v3_cfg_t const usdhc2_emmc_pads[] = {
 	MX6_PAD_NAND_ALE__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-/* we default to 4-bit bus width and 1v8 */
-static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 1 };
+/* we default to 4-bit bus width and 3v3 - we need to enable eMMC's
+ * reset first before we can reliably use 1.8 V */
+static struct fsl_esdhc_cfg usdhc2_emmc_cfg = { USDHC2_BASE_ADDR, 0, 4, 0, 0 };
 
 #define USDHC2_RST_GPIO	IMX_GPIO_NR(4, 10)
 
@@ -117,6 +118,9 @@ int board_mmc_init(bd_t *bis)
 
 	imx_iomux_v3_setup_multiple_pads(usdhc2_emmc_pads, ARRAY_SIZE(usdhc2_emmc_pads));
 
+	/* this reset might not be seen by the eMMC since we need to enable its
+	 * reset pin first - but in a second run this might be good, and for the
+	 * first run, it shouldn't harm */
 	gpio_direction_output(USDHC2_RST_GPIO, 0);
 	udelay(500);
 	gpio_direction_output(USDHC2_RST_GPIO, 1);
