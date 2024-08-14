@@ -77,7 +77,7 @@
 		"\0" \
 	"initrd_addr=0x83800000\0" \
 	"initrd_high=0xffffffff\0" \
-	"bootcmd_mfg=run mfgtool_args;bootz ${loadaddr} ${initrd_addr} ${fdt_addr};\0" \
+	"bootcmd_mfg=mmc rst-function 0 1; run mfgtool_args;bootz ${loadaddr} ${initrd_addr} ${fdt_addr};\0" \
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"update_fw_filename_prefix=emmc.img.\0" \
