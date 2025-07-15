@@ -20,7 +20,7 @@
 #include <imx_thermal.h>
 
 /* board will busyloop until this many degrees C below CPU max temperature */
-#define TEMPERATURE_HOT_DELTA   5 /* CPU maxT - 5C */
+#define TEMPERATURE_HOT_DELTA   15 /* CPU maxT - 15C */
 #define FACTOR0			10000000
 #define FACTOR1			15423
 #define FACTOR2			4148468
