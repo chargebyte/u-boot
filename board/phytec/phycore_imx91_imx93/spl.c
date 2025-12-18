@@ -62,7 +62,7 @@ void spl_dram_init(void)
 	enum phytec_imx93_ddr_eeprom_code ddr_opt = INVALID;
 
 	/* NOTE: In SPL lpi2c3 is mapped to bus 1 */
-	ret = phytec_eeprom_data_setup(NULL, 1, EEPROM_ADDR);
+	ret = phytec_eeprom_data_setup(NULL, 2, EEPROM_ADDR);
 	if (ret && !IS_ENABLED(CONFIG_PHYCORE_IMX91_IMX93_RAM_TYPE_FIX))
 		goto out;
 
