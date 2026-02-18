@@ -179,9 +179,7 @@
 };
 
 &lpi2c1 {
-	bootph-pre-ram;
 	bootph-some-ram;
-	status = "disabled";
 };
 
 &lpi2c2 {
