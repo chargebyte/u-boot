@@ -24,6 +24,17 @@
 		stdout-path = &lpuart1;
 	};
 
+	reg_usdhc2_vmmc: regulator-usdhc2 {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-name = "VCC_SD";
+	};
+
 	user_leds: user-leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
@@ -56,6 +67,9 @@
 	};
 };
 
+// Heartbeat LED of phyCore is not populated
+/delete-node/ &pinctrl_leds;
+
 /* CAN */
 &flexcan1 {
 	pinctrl-names = "default";
@@ -74,16 +88,16 @@
 
 &gpio2 {
 	// 30 pins (0..29)
-	gpio-line-names = "X_LAN_nCS", "", "", "", "", "", "", "X_LAN_nIRQ", "", "", \
+	gpio-line-names = "", "", "", "", "", "", "", "X_LAN_nIRQ", "X_LAN_nCS", "", \
 			  "", "", "", "", "", "", "", "", "", "", \
-			  "", "", "", "", "RED_LED", "", "", "", "", "";
+			  "", "", "", "", "GREEN_LED", "RED_LED", "", "", "", "";
 };
 
 &gpio3 {
 	// 32 pins (0..31)
 	gpio-line-names = "SD2_nCD", "", "", "", "", "", "", "SD2_nRESET", "", "", \
 			  "", "", "", "", "", "", "", "", "", "", \
-			  "SOM_EMMC_nRESET", "", "GREEN_LED", "", "", "", "", "", "X_TDI", "X_TMS_SWDIO", \
+			  "SOM_EMMC_nRESET", "", "", "", "", "", "", "", "X_TDI", "X_TMS_SWDIO", \
 			  "", "X_TDO";
 };
 
@@ -156,6 +170,11 @@
 	pinctrl-0 = <&pinctrl_fec &pinctrl_eqos &pinctrl_eqos_strap>;
 };
 
+/* Ethernet 1 PHY */
+&ethphy1 {
+	ti,leds-polarity = <1>; // active-high
+};
+
 /* Ethernet 2 */
 &eqos {
 	phy-mode = "rmii";
@@ -176,9 +195,12 @@
 &mdio {
 	ethphy2: ethernet-phy@2 {
 		reg = <2>;
-		compatible = "ethernet-phy-ieee802.3-c22";
+		compatible = "ethernet-phy-id2000.a140", "ethernet-phy-ieee802.3-c22";
+		clocks = <&clk IMX93_CLK_ENET_REF_PHY>;
 		reset-gpios = <&gpio4 13 GPIO_ACTIVE_HIGH>;
 		reset-assert-us = <30>;
+		reset-deassert-us = <50000>;
+		ti,leds-polarity = <1>; // active-high
 	};
 };
 
@@ -246,21 +268,20 @@
 
 /* SD */
 &usdhc2 {
-	pinctrl-names = "default";
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
 	pinctrl-0 = <&pinctrl_usdhc2_default>, <&pinctrl_usdhc2_cd>;
+	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_cd>;
+	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_cd>;
 	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
+	vmmc-supply = <&reg_usdhc2_vmmc>;
 	bus-width = <4>;
 	disable-wp;
 	no-sdio;
 	no-mmc;
-	no-1-8-v;
 	status = "okay";
 };
 
 &iomuxc {
-
-	/delete-node/ pinctrl_leds;
-
 	pinctrl_user_leds: userledgrp {
 		fsl,pins = <
 			MX93_PAD_GPIO_IO24__GPIO2_IO24		0x31e // USER_GREEN
@@ -302,12 +323,39 @@
 	/* need to config the SION for data and cmd pad, refer to ERR052021 */
 	pinctrl_usdhc2_default: usdhc2grp {
 		fsl,pins = <
-			MX93_PAD_SD2_CLK__USDHC2_CLK		0x179e
+			MX93_PAD_SD2_CLK__USDHC2_CLK		0x119e
 			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000139e
 			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
 			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
 			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000138e
 			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000139e
+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
+		>;
+	};
+
+	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+		fsl,pins = <
+			MX93_PAD_SD2_CLK__USDHC2_CLK		0x119e
+			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000139e
+			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
+			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
+			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000139e
+			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000139e
+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
+		>;
+	};
+
+	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+		fsl,pins = <
+			MX93_PAD_SD2_CLK__USDHC2_CLK		0x118e
+			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000139e
+			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000139e
+			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000139e
+			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000139e
+			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000139e
+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
 		>;
 	};
 
@@ -382,16 +430,16 @@
 	pinctrl_gpio1: gpio1grp {
 		fsl,pins = <
 			MX93_PAD_I2C2_SDA__GPIO1_IO03		0x31e // X_nRST_LAN
-			MX93_PAD_PDM_BIT_STREAM1__GPIO1_IO10	0x3fe // CHSTOP_IN
+			MX93_PAD_PDM_BIT_STREAM1__GPIO1_IO10	0x382 // CHSTOP_IN
 		>;
 	};
 
 	pinctrl_gpio4: gpio4grp {
 		fsl,pins = <
-			MX93_PAD_ENET1_TXC__GPIO4_IO07		0x3fe // X_ENET1_INT
-			MX93_PAD_ENET1_RD2__GPIO4_IO12		0x3fe // SC_BOOTMODE
-			MX93_PAD_CCM_CLKO3__GPIO4_IO28		0x3fe // SC_nRST_INT
-			MX93_PAD_ENET1_RD3__GPIO4_IO13		0x31e // ENET1_nRST
+			MX93_PAD_ENET1_TXC__GPIO4_IO07		0x382 // X_ENET1_INT
+			MX93_PAD_ENET1_RD2__GPIO4_IO12		0x39e // SC_BOOTMODE
+			MX93_PAD_CCM_CLKO3__GPIO4_IO28		0x39e // SC_nRST_INT
+			MX93_PAD_ENET1_RD3__GPIO4_IO13		0x31e // ENET1_RST
 		>;
 	};
 
